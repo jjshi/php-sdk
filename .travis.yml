@@ -9,7 +9,7 @@ php:
   - 5.6
   - 7.0
 before_script:
-  - export QINIU_TEST_ENV="travis"
+  - export LOMOCOIN_TEST_ENV="travis"
   - travis_retry composer self-update
   - travis_retry composer install --no-interaction --prefer-source --dev
 script:

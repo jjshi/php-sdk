@@ -4,8 +4,8 @@ namespace Lomo;
 
 use Lomo\Config;
 
-if (!defined('QINIU_FUNCTIONS_VERSION')) {
-    define('QINIU_FUNCTIONS_VERSION', Config::SDK_VER);
+if (!defined('LOMOCOIN_FUNCTIONS_VERSION')) {
+    define('LOMOCOIN_FUNCTIONS_VERSION', Config::SDK_VER);
 
    /**
      * 计算文件的crc32检验码:
@@ -41,7 +41,6 @@ if (!defined('QINIU_FUNCTIONS_VERSION')) {
      * @param string $data 待编码的数据，一般为字符串
      *
      * @return string 编码后的字符串
-     * @link http://developer.qiniu.com/docs/v6/api/overview/appendix.html#urlsafe-base64
      */
     function base64_urlSafeEncode($data)
     {
@@ -112,7 +111,6 @@ if (!defined('QINIU_FUNCTIONS_VERSION')) {
      * @param $key 待操作的文件名
      *
      * @return string  符合七牛API规格的数据格式
-     * @link http://developer.qiniu.com/docs/v6/api/reference/data-formats.html
      */
     function entry($bucket, $key)
     {

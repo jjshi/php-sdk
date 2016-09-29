@@ -1,7 +1,6 @@
 <?php
 namespace Lomo;
 
-use Lomo\Http\Auth;
 use Lomo\Http\Client;
 
 final class Wallet

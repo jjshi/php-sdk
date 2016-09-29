@@ -8,12 +8,14 @@ final class Request
     public $body;
     public $method;
 
-    public function __construct($method, $url, array $headers = array(), $body = null)
+    public function __construct($method, $url, $data , array $headers = array(), $body = null)
     {
         $this->method = strtoupper($method);
         $this->url = $url;
         $this->headers = $headers;
         $this->body = $body;
+        $this->data = $data;
+
     }
 
 }

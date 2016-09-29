@@ -2,13 +2,12 @@
 namespace Lomo\Http;
 
 use Lomo\Config;
-use Lomo\Http\Request;
-use Lomo\Http\Response;
 
 final class Client
 {
-    public static function get($url, array $headers = array())
+    public static function get($url, $body, array $headers = array())
     {
+        !empty($body) && $url = $url . '?' . http_build_query($body);
         $request = new Request('GET', $url, $headers);
         return self::sendRequest($request);
     }

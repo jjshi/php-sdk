@@ -1,46 +1,49 @@
 <?php
 namespace Lomo;
 
+use Lomo\Http\Auth;
+use Lomo\Http\Client;
+
 final class Wallet
 {
     public $upHost;
     public $upHostBackup;
 
-    public function __construct( $auth )
-    {
-        $this->auth = $auth;
-    }
     /**
      * 创建账户
      *
      * @param int $_intAccountId 账户ID
+     * @param object  Auth $auth
      * @return boolean
      */
-    public static function newAccount( $_intAccountId = 0 )
+    public static function newAccount( $_intAccountId = 0 , Auth $auth )
     {
-        // 发送数据
+        // 整理数据
         $aryData = array(
-            'account'=>$_intAccountId,
+            'account'    => $_intAccountId,
+            'access_key' => $auth->getAccessKey()
         );
 
-        return WApiRpc::callApi( self::getUri().self::WALLET_API_NEW_ACCOUNT , $aryData , WALLET_HOT_KEY , false );
+        $_aryData['auth_code'] = $auth->sign( $aryData );
+        return Client::get( Config::WALLET_HOST , $aryData  );
     }
     /**
      * 发送转账验证码
      *
      * @param string $_strPhone 邮箱地址
+     * @param object  Auth $auth
+
      * @return boolean
      */
-    public static function sendPhoneCode( $_strPhone = '' )
+    public static function sendPhoneCode( $_strPhone = '' , Auth $auth )
     {
         // 发送数据
         $aryData = array(
-            'phone'=>$_strPhone,
-            'tmpl'=>1,
-            'signature'=>5,
+            'phone'         => $_strPhone,
+            'access_key'    => $auth->getAccessKey()
         );
-
-        return CWalletApiRpc::callApi( self::getUri().self::WALLET_API_SEND_SMS , $aryData , WALLET_HOT_KEY , false );
+        $_aryData['auth_code'] = $auth->sign( $aryData );
+        return Client::get( Config::WALLET_HOST , $aryData  );
     }
 
     /**
@@ -55,9 +58,6 @@ final class Wallet
      */
     public static function transMoney( $_strFromAdd = '' , $_strToAdd = '' , $_strPhone = '' , $_strCode = '' , $_floatCoins = 0 )
     {
-        if ( empty( $_strFromAdd ) || empty( $_strToAdd ) || empty( $_strPhone ) || empty( $_strCode ) || empty( $_floatCoins ) )
-            throw new CModelException( '钱包：转账参数错误！' );
-
         // 发送数据
         $aryData = array(
             'from'=>$_strFromAdd,
@@ -65,10 +65,9 @@ final class Wallet
             'coins'=>$_floatCoins,
             'phone'=>$_strPhone,
             'code'=>$_strCode,
-            'tmpl'=>1,
             'codetype'=>'SMS',
         );
 
-        return CWalletApiRpc::callApi( self::getUri().self::WALLET_API_TRANS , $aryData , WALLET_HOT_KEY );
+        return Client::get( Config::WALLET_HOST , $aryData  );
     }
 }

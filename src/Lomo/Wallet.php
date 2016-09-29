@@ -2,6 +2,7 @@
 namespace Lomo;
 
 use Lomo\Http\Client;
+use Lomo\Http\Error;
 
 final class Wallet
 {
@@ -24,7 +25,11 @@ final class Wallet
         );
 
         $_aryData['auth_code'] = $auth->sign( $aryData );
-        return Client::get( Config::WALLET_HOST , $aryData  );
+        $ret = Client::get( Config::WALLET_HOST , $aryData  );
+        if (!$ret->ok()) {
+            return array(null, new Error(Config::WALLET_HOST , $ret));
+        }
+        return array($ret->json(), null);
     }
     /**
      * 发送转账验证码
@@ -42,7 +47,11 @@ final class Wallet
             'access_key'    => $auth->getAccessKey()
         );
         $_aryData['auth_code'] = $auth->sign( $aryData );
-        return Client::get( Config::WALLET_HOST , $aryData  );
+        $ret = Client::get( Config::WALLET_HOST , $aryData  );
+        if (!$ret->ok()) {
+            return array(null, new Error(Config::WALLET_HOST , $ret));
+        }
+        return array($ret->json(), null);
     }
 
     /**
@@ -67,6 +76,10 @@ final class Wallet
             'codetype'=>'SMS',
         );
 
-        return Client::get( Config::WALLET_HOST , $aryData  );
+        $ret = Client::get( Config::WALLET_HOST , $aryData  );
+        if (!$ret->ok()) {
+            return array(null, new Error(Config::WALLET_HOST , $ret));
+        }
+        return array($ret->json(), null);
     }
 }

@@ -10,7 +10,7 @@ final class Wallet
     public $upHostBackup;
 
     /**
-     * 创建账户
+     * 创建账户钱包地址
      *
      * @param int $_intAccountId 账户ID
      * @param object  Auth $auth
@@ -20,8 +20,9 @@ final class Wallet
     {
         // 整理数据
         $aryData = array(
-            'account'    => $_intAccountId,
-            'access_key' => $auth->getAccessKey()
+            'account_id'    => $_intAccountId,
+            'access_key'    => $auth->getAccessKey(),
+            'request_time'  => time(),
         );
 
         $_aryData['auth_code'] = $auth->sign( $aryData );
@@ -34,17 +35,20 @@ final class Wallet
     /**
      * 发送转账验证码
      *
-     * @param string $_strPhone 邮箱地址
+     * @param string $_intPhone 手机号
+     * @param string $_intAccountId 用户开放平台标识id
      * @param object  Auth $auth
 
      * @return boolean
      */
-    public static function sendPhoneCode( $_strPhone = '' , Auth $auth )
+    public static function sendPhoneCode( $_intPhone = '' ,$_intAccountId ,  Auth $auth )
     {
         // 发送数据
         $aryData = array(
-            'phone'         => $_strPhone,
-            'access_key'    => $auth->getAccessKey()
+            'access_key'    => $auth->getAccessKey(),
+            'phone_num'     => $_intPhone,
+            'account_id'    => $_intAccountId,
+
         );
         $_aryData['auth_code'] = $auth->sign( $aryData );
         $ret = Client::get( Config::WALLET_HOST , $aryData  );
@@ -57,23 +61,20 @@ final class Wallet
     /**
      * 转账
      *
-     * @param string $_strFromAdd 来源地址
-     * @param string $_strToAdd 发送地址
-     * @param string $_strPhone 手机号
-     * @param string $_strCode 验证码
-     * @param float $_floatCoins 转账金额
+     * @param string $_strFromAdd 转出钱包地址
+     * @param string $_strToAdd 转入钱包地址
+     * @param int $_intTransferId 本次交易id,必须为递增整数
+     * @param int $_floatCoins 币数
      * @return boolean
      */
-    public static function transMoney( $_strFromAdd = '' , $_strToAdd = '' , $_strPhone = '' , $_strCode = '' , $_floatCoins = 0 )
+    public static function transMoney( $_strFromAdd = '' , $_strToAdd = '' ,  $_floatCoins = 0 , $_intTransferId = 0 )
     {
         // 发送数据
         $aryData = array(
-            'from'=>$_strFromAdd,
-            'to'=>$_strToAdd,
-            'coins'=>$_floatCoins,
-            'phone'=>$_strPhone,
-            'code'=>$_strCode,
-            'codetype'=>'SMS',
+            'from_wallet'   =>  $_strFromAdd,
+            'to_wallet'     =>  $_strToAdd,
+            'coins'         =>  $_floatCoins,
+            'transfer_id'   =>  $_intTransferId
         );
 
         $ret = Client::get( Config::WALLET_HOST , $aryData  );

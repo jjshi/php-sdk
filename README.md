@@ -16,7 +16,7 @@ $ composer require lomocoin/php-sdk
 
 ## 使用方法
 
-### 上传
+### 创建账户钱包地址
 ```php
 use Lomocoin\Storage\UploadManager;
 use Lomocoin\Auth;

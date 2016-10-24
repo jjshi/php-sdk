@@ -18,13 +18,13 @@ $ composer require lomocoin/php-sdk
 
 ### 创建账户钱包地址
 ```php
-use Lomocoin\Storage\UploadManager;
+use Lomo\Wallet;
 use Lomocoin\Auth;
 ...
-    $upManager = new UploadManager();
     $auth = new Auth($accessKey, $secretKey);
-    $token = $auth->uploadToken($bucketName);
-    list($ret, $error) = $upManager->put($token, 'formput', 'hello world');
+    $_intAccountId = 1;
+    $res = Wallet:: newAccount( $_intAccountId , $auth );    
+
 ...
 ```
 
@@ -49,7 +49,7 @@ $ ./vendor/bin/phpunit tests/lomo/Tests/
 
 ## 联系我们
  
-- 如果发现了bug， 欢迎提交 [issue](https://github.com/lomocoin/php-sdk/issues)
+- 如果发现了bug，欢迎提交 [issue](https://github.com/lomocoin/php-sdk/issues)
 - 如果有功能需求，欢迎提交 [issue](https://github.com/lomocoin/php-sdk/issues)
 - 如果要提交代码，欢迎提交 pull request
 

@@ -12,7 +12,7 @@ $secretKey = 'Secret_Key';
 $auth = new Auth( $accessKey , $secretKey );
 // 整理数据
 $aryData = array(
-    'app_id'        => '_intAppId',
+    'access_Key'    => '_strAccessKey',
     'account_id'    => '_intAccountId',
     'request_time'  => '_intRequestTime',
     'symbol'        => '_strSymbol'

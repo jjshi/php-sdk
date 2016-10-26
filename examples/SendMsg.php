@@ -12,10 +12,10 @@ $secretKey = 'Secret_Key';
 $auth = new Auth( $accessKey , $secretKey );
 // 整理数据
 $aryData = array(
-    'phone'         => '_strPhone',
-    'request_time'  => '_intRequestTime',
-    'app_id'        => '_intAppId',
-    'account_id'    => '_intAccountId',
+    'phone_num'         => '_strPhone',
+    'request_time'      => '_intRequestTime',
+    'access_key'        => '_strAccessKey',
+    'account_id'        => '_intAccountId',
 );
 $aryData['auth_code'] = $auth->sign( $aryData );
 try{

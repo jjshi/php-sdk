@@ -12,18 +12,17 @@ $secretKey = 'Secret_Key';
 $auth = new Auth( $accessKey , $secretKey );
 // 整理数据
 $aryData = array(
-    'account_id'    => 'account_id' ,
-    'symbol'        => 'symbol' ,
-    'from'          => 'from' ,
-    'to'            => 'to' ,
+    'transfer_id'   => 'transfer_id' ,
+    'from_wallet'   => 'from_wallet' ,
+    'to_wallet'     => 'to_wallet' ,
     'coins'         => 'coins' ,
     'request_time'  => 'request_time' ,
-    'transfer_id'   => 'transfer_id' ,
+    'access_key'    => '_strAccessKey',
 );
 $aryData['auth_code'] = $auth->sign( $aryData );
 try{
     // 调用转账接口
-    $ret = Client::post( Config::WALLET_HOST .'/transfer', $aryData  );
+    $ret = Client::post( Config::WALLET_HOST .'/wallet/transfer', $aryData  );
     // 验证网络状态
     if(!$ret->ok() ){
         $errOb = new Error( Config::WALLET_HOST , $ret );

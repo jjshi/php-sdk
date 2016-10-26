@@ -12,7 +12,6 @@ $secretKey = 'Secret_Key';
 $auth = new Auth( $accessKey , $secretKey );
 // 整理数据
 $aryData = array(
-    'app_id'        => 'app_id' ,
     'account_id'    => 'account_id' ,
     'symbol'        => 'symbol' ,
     'from'          => 'from' ,
@@ -20,8 +19,6 @@ $aryData = array(
     'coins'         => 'coins' ,
     'request_time'  => 'request_time' ,
     'transfer_id'   => 'transfer_id' ,
-    'transfer_type' => 'transfer_type' ,
-    'callback'      => 'callback' ,
 );
 $aryData['auth_code'] = $auth->sign( $aryData );
 try{

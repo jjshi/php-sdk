@@ -20,7 +20,7 @@ $aryData = array(
 $aryData['auth_code'] = $auth->sign( $aryData );
 try{
     // 调用创建钱包
-    $ret = Client::post( Config::WALLET_HOST.'/address/new' , $aryData  );
+    $ret = Client::post( Config::WALLET_HOST.'/wallet/address' , $aryData  );
     // 验证网络状态
     if(!$ret->ok() ){
         $errOb = new Error(Config::WALLET_HOST , $ret);

@@ -26,7 +26,7 @@ final class Wallet
         );
 
         $_aryData['auth_code'] = $auth->sign( $aryData );
-        $ret = Client::get( Config::WALLET_HOST , $aryData  );
+        $ret = Client::get( Config::WALLET_HOST.'/wallet/address' , $aryData  );
         if (!$ret->ok()) {
             return array(null, new Error(Config::WALLET_HOST , $ret));
         }

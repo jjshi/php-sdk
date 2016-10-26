@@ -106,8 +106,8 @@ final class Response
                 $jsonData = self::bodyJson($body);
                 if ($code >=400) {
                     $this->error = $body;
-                    if ($jsonData['error'] !== null) {
-                        $this->error = $jsonData['error'];
+                    if ($jsonData['msg'] !== null) {
+                        $this->error = $jsonData['msg'];
                     }
                 }
                 $this->jsonData = $jsonData;

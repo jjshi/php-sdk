@@ -16,6 +16,7 @@ final class Response
 
     /** @var array Mapping of status codes to reason phrases */
     private static $statusTexts = array(
+        -1 => 'Maintenance',
         100 => 'Continue',
         101 => 'Switching Protocols',
         102 => 'Processing',
@@ -91,14 +92,12 @@ final class Response
         $this->body = $body;
         $this->error = $error;
         $this->jsonData = null;
-        if ($error !== null) {
+        if (!empty($error)) {
             return;
         }
-
-        if ($body === null) {
-            if ($code >= 400) {
-                $this->error = self::$statusTexts[$code];
-            }
+        // 处理数据,没有返回,或者curl报错的情况下直接返回,如果钱包有返回,直接返回。
+        if ($body === null || substr($body,0,15) === '<!DOCTYPE html>') {
+            $this->error = !empty(self::$statusTexts[$code])?self::$statusTexts[$code] : 'Maintenance' ;
             return;
         }
         if (self::isJson($headers)) {

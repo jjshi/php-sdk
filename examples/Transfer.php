@@ -29,6 +29,8 @@ try{
         throw new  Exception( $errOb->message() , $errOb->code() );
     }
     $resData = $ret->json() ;
+
+
     // 验证业务逻辑
     if($resData['code'] !== 200 ){
         throw new Exception( $resData['msg'] ,$resData['code']);

@@ -6,33 +6,15 @@
 ```bash
 $ composer require lomocoin/php-sdk
 ```
-* 直接下载安装，SDK 没有依赖其他第三方库，但需要参照 composer的autoloader，增加一个自己的autoloader程序。
+* 直接下载安装，SDK 没有依赖其他第三方库
 
 ## 运行环境
 
 | lomocoin SDK版本 | PHP 版本 |
 |:--------------------:|:---------------------------:|
 |          1.x         |  cURL extension,   5.3 - 5.6,7.0 |
+|          2.x         |  cURL extension,   5.3 - 5.6,7.0 |
 
-## 使用方法
-
-### 创建账户钱包地址
-```php
-use Lomo\Wallet;
-use Lomocoin\Auth;
-...
-    $auth = new Auth($accessKey, $secretKey);
-    $_intAccountId = 1;
-    $res = Wallet:: newAccount( $_intAccountId , $auth );    
-
-...
-```
-
-## 测试
-
-``` bash
-$ ./vendor/bin/phpunit tests/lomo/Tests/
-```
 
 ## 常见问题
 

@@ -1,4 +1,5 @@
 <?php
+namespace Lomo;
 /**
  * 钱包API调用
  * Created by PhpStorm.

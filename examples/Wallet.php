@@ -1,4 +1,6 @@
 <?php
+namespace Lomo;
+
 /**
  * 钱包管理
  *

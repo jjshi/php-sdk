@@ -45,23 +45,26 @@ class WalletApi
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         // 运行cURL，请求网页
         $res = curl_exec($curl);
+        $ret = curl_errno($curl);
         $error = curl_error($curl);
-        // 关闭URL请求
-        curl_close($curl);
-        if(!empty($error)){
+        if($ret !== 0){
             return [
-                'code' => curl_errno($curl),
+                'code' => $ret,
                 'msg'  => $error,
             ];
         }
-        $resJson = json_decode( $res, true);
-        if( empty($resJson)){
+        // 关闭URL请求
+        $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+        // 处理数据,没有返回,或者curl报错的情况下直接返回,如果钱包有返回,直接返回。
+        if($code !=200 || empty($res) || substr($res,0,15) === '<!DOCTYPE html>'){
+            $msg = !empty( self::$statusTexts[$code] ) ? self::$statusTexts[$code] : 'Maintenance' ;
             return [
-                'code' => 500,
-                'msg'  => '解析失败返回值,请检查原因',
+                'code' => $code,
+                'msg'  => $msg,
             ];
         }
-        return $resJson;
+        return json_decode((string) $res, true, 512);
     }
 
     /**
@@ -103,24 +106,27 @@ class WalletApi
         curl_setopt($curl, CURLOPT_POSTFIELDS, $strData);
         // 运行cURL，请求网页
         $res = curl_exec($curl);
+        $ret = curl_errno($curl);
         $error = curl_error($curl);
-        // 关闭URL请求
-        curl_close($curl);
-
-        if(!empty($error)){
+        if($ret !== 0){
+            curl_close($curl);
             return [
-                'code' => curl_errno($curl),
+                'code' => $ret,
                 'msg'  => $error,
             ];
         }
-        $resJson = json_decode( $res, true);
-        if( empty($resJson)){
+        // 关闭URL请求
+        $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+        // 处理数据,没有返回,或者curl报错的情况下直接返回,如果钱包有返回,直接返回。
+        if($code !=200 || empty($res) || substr($res,0,15) === '<!DOCTYPE html>'){
+            $msg = !empty( self::$statusTexts[$code] ) ? self::$statusTexts[$code] : 'Maintenance' ;
             return [
-                'code' => 500,
-                'msg'  => '解析失败返回值,请检查原因',
+                'code' => $code,
+                'msg'  => $msg,
             ];
         }
-        return $resJson;
+        return json_decode((string) $res, true, 512);
     }
 
     /**
@@ -155,6 +161,81 @@ class WalletApi
         $sign = md5($sign);
         return $sign;
     }
+    private static function parseHeaders($raw)
+    {
+        $headers = array();
+        $headerLines = explode("\r\n", $raw);
+        foreach ($headerLines as $line) {
+            $headerLine = trim($line);
+            $kv = explode(':', $headerLine);
+            if (count($kv) >1) {
+                $headers[$kv[0]] = trim($kv[1]);
+            }
+        }
+        return $headers;
+    }
+    /** @var array Mapping of status codes to reason phrases */
+    private static $statusTexts = array(
+        -1 => 'Maintenance',
+        100 => 'Continue',
+        101 => 'Switching Protocols',
+        102 => 'Processing',
+        200 => 'OK',
+        201 => 'Created',
+        202 => 'Accepted',
+        203 => 'Non-Authoritative Information',
+        204 => 'No Content',
+        205 => 'Reset Content',
+        206 => 'Partial Content',
+        207 => 'Multi-Status',
+        208 => 'Already Reported',
+        226 => 'IM Used',
+        300 => 'Multiple Choices',
+        301 => 'Moved Permanently',
+        302 => 'Found',
+        303 => 'See Other',
+        304 => 'Not Modified',
+        305 => 'Use Proxy',
+        307 => 'Temporary Redirect',
+        308 => 'Permanent Redirect',
+        400 => 'Bad Request',
+        401 => 'Unauthorized',
+        402 => 'Payment Required',
+        403 => 'Forbidden',
+        404 => 'Not Found',
+        405 => 'Method Not Allowed',
+        406 => 'Not Acceptable',
+        407 => 'Proxy Authentication Required',
+        408 => 'Request Timeout',
+        409 => 'Conflict',
+        410 => 'Gone',
+        411 => 'Length Required',
+        412 => 'Precondition Failed',
+        413 => 'Request Entity Too Large',
+        414 => 'Request-URI Too Long',
+        415 => 'Unsupported Media Type',
+        416 => 'Requested Range Not Satisfiable',
+        417 => 'Expectation Failed',
+        422 => 'Unprocessable Entity',
+        423 => 'Locked',
+        424 => 'Failed Dependency',
+        425 => 'Reserved for WebDAV advanced collections expired proposal',
+        426 => 'Upgrade required',
+        428 => 'Precondition Required',
+        429 => 'Too Many Requests',
+        431 => 'Request Header Fields Too Large',
+        500 => 'Internal Server Error',
+        501 => 'Not Implemented',
+        502 => 'Bad Gateway',
+        503 => 'Service Unavailable',
+        504 => 'Gateway Timeout',
+        505 => 'HTTP Version Not Supported',
+        506 => 'Variant Also Negotiates (Experimental)',
+        507 => 'Insufficient Storage',
+        508 => 'Loop Detected',
+        510 => 'Not Extended',
+        511 => 'Network Authentication Required',
+    );
 
 //end class
 }

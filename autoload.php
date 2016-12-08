@@ -11,4 +11,4 @@ function classLoader($class)
 }
 spl_autoload_register('classLoader');
 
-require_once  __DIR__ . '/src/Lomo/functions.php';
+//require_once  __DIR__ . '/src/Lomo/functions.php';

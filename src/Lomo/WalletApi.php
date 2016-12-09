@@ -55,16 +55,25 @@ class WalletApi
         }
         // 关闭URL请求
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+        $headers = self::parseHeaders(substr($res, 0, $header_size));
+        $body = substr($res, $header_size);
         curl_close($curl);
+        if($code >= 400 ){
+            return [
+                'code' => $code,
+                'msg'  => $body,
+            ];
+        }
         // 处理数据,没有返回,或者curl报错的情况下直接返回,如果钱包有返回,直接返回。
-        if($code !=200 || empty($res) || substr($res,0,15) === '<!DOCTYPE html>'){
+        if(empty($resJson) || substr($res,0,15) === '<!DOCTYPE html>'){
             $msg = !empty( self::$statusTexts[$code] ) ? self::$statusTexts[$code] : 'Maintenance' ;
             return [
                 'code' => $code,
                 'msg'  => $msg,
             ];
         }
-        return json_decode((string) $res, true, 512);
+        return json_decode((string) $body, true, 512);
     }
 
     /**
@@ -118,8 +127,14 @@ class WalletApi
         // 关闭URL请求
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
+        if($code >= 400 ){
+            return [
+                'code' => $code,
+                'msg'  => $res,
+            ];
+        }
         // 处理数据,没有返回,或者curl报错的情况下直接返回,如果钱包有返回,直接返回。
-        if($code !=200 || empty($res) || substr($res,0,15) === '<!DOCTYPE html>'){
+        if(empty($res) || substr($res,0,15) === '<!DOCTYPE html>'){
             $msg = !empty( self::$statusTexts[$code] ) ? self::$statusTexts[$code] : 'Maintenance' ;
             return [
                 'code' => $code,
